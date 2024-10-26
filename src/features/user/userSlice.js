@@ -11,7 +11,7 @@ export const loginWithEmail = createAsyncThunk(
       const response = await api.post("/auth/login", { email, password });
       // 성공
       // LoginPage
-
+      sessionStorage.setItem("token", response.data.token);
       return response.data;
     } catch (error) {
       // 실패시 생긴 에러값은 reducer에 저장
@@ -25,7 +25,9 @@ export const loginWithGoogle = createAsyncThunk(
   async (token, { rejectWithValue }) => {}
 );
 
-export const logout = () => (dispatch) => {};
+export const logout = () => (dispatch) => {
+  sessionStorage.removeItem("token");
+};
 
 export const registerUser = createAsyncThunk(
   "user/registerUser",
