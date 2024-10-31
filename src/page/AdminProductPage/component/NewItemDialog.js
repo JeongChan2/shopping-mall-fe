@@ -8,6 +8,7 @@ import {
   clearError,
   createProduct,
   editProduct,
+  getProductList,
 } from "../../../features/product/productSlice";
 
 const InitialFormData = {
@@ -83,6 +84,7 @@ const NewItemDialog = ({ mode, showDialog, setShowDialog }) => {
     } else {
       // 상품 수정하기
     }
+    
   };
 
   const handleChange = (event) => {
