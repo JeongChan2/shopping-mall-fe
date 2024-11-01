@@ -7,12 +7,13 @@ import { GoogleOAuthProvider } from "@react-oauth/google";
 import "./style/login.style.css";
 import { loginWithEmail, loginWithGoogle } from "../../features/user/userSlice";
 import { clearErrors } from "../../features/user/userSlice";
+import { ClipLoader } from "react-spinners";
 const GOOGLE_CLIENT_ID = process.env.REACT_APP_GOOGLE_CLIENT_ID;
 
 const Login = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { user, loginError } = useSelector((state) => state.user);
+  const { user, loginError, loading } = useSelector((state) => state.user);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -36,6 +37,7 @@ const Login = () => {
   return (
     <>
       <Container className="login-area">
+        <ClipLoader color="#f88c7b" loading={loading} size={50} />
         {loginError && (
           <div className="error-message">
             <Alert variant="danger">{loginError}</Alert>

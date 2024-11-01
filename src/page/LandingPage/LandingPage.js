@@ -4,11 +4,12 @@ import { Row, Col, Container } from "react-bootstrap";
 import { useSearchParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { getProductList } from "../../features/product/productSlice";
+import { ClipLoader } from "react-spinners";
 
 const LandingPage = () => {
   const dispatch = useDispatch();
 
-  const productList = useSelector((state) => state.product.productList);
+  const { productList, loading } = useSelector((state) => state.product);
   const [query] = useSearchParams();
   const name = query.get("name");
   useEffect(() => {
@@ -22,6 +23,7 @@ const LandingPage = () => {
   return (
     <Container>
       <Row>
+        <ClipLoader color="#f88c7b" loading={loading} size={50} />
         {productList.length > 0 ? (
           productList.map((item) => (
             <Col md={3} sm={12} key={item._id}>
