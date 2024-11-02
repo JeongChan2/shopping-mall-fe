@@ -1,6 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import api from "../../utils/api";
 import { showToastMessage } from "../common/uiSlice";
+import * as types from './../../constants/product.constants';
 
 // 비동기 액션 생성
 export const getProductList = createAsyncThunk(
@@ -19,7 +20,23 @@ export const getProductList = createAsyncThunk(
 
 export const getProductDetail = createAsyncThunk(
   "products/getProductDetail",
-  async (id, { rejectWithValue }) => {}
+  async (id, { dispatch, rejectWithValue }) => {
+    try {
+      // dispatch({ type: types.GET_PRODUCT_DETAIL_REQUEST });
+      const response = await api.get(`/product/${id}`);
+      if (response.status !== 200) throw new Error(response.error);
+      // dispatch({
+      //   type: types.GET_PRODUCT_DETAIL_SUCCESS,
+      //   payload: response.data.data,
+      // });
+      dispatch(setSelectedProduct(response.data.data))
+
+    } catch (error) {
+      // dispatch({ type: types.GET_PRODUCT_DETAIL_FAIL, payload: error.error });
+      dispatch(showToastMessage(error.error, "error"));
+      return rejectWithValue(error.error);
+    }
+  }
 );
 
 export const createProduct = createAsyncThunk(
@@ -31,7 +48,7 @@ export const createProduct = createAsyncThunk(
       dispatch(
         showToastMessage({ message: "상품 생성 완료", status: "success" })
       );
-      dispatch(getProductDetail({ page: 1 }));
+      dispatch(getProductList({ page: 1 }));
       return response.data.data;
     } catch (error) {
       return rejectWithValue(error.error);
@@ -41,7 +58,23 @@ export const createProduct = createAsyncThunk(
 
 export const deleteProduct = createAsyncThunk(
   "products/deleteProduct",
-  async (id, { dispatch, rejectWithValue }) => {}
+  async (id, { dispatch, rejectWithValue }) => {
+    try {
+      // dispatch({ type: types.PRODUCT_DELETE_REQUEST });
+      const response = await api.delete(`/product/${id}`);
+      if (response.status !== 200) throw new Error(response.error);
+      // dispatch({
+      //   type: types.PRODUCT_DELETE_SUCCESS,
+      // });
+      dispatch(showToastMessage({message:"상품 삭제 완료", status:"success"}));
+  
+      dispatch(getProductList({ page: 1 }));
+    } catch (error) {
+      // dispatch({ type: types.PRODUCT_DELETE_FAIL, payload: error.error });
+      // dispatch(showToastMessage(error.error, "error"));
+      return rejectWithValue(error.error);
+    }
+  }
 );
 
 export const editProduct = createAsyncThunk(
@@ -53,7 +86,7 @@ export const editProduct = createAsyncThunk(
       dispatch(
         showToastMessage({ message: "상품 수정 완료", status: "success" })
       );
-      dispatch(getProductDetail({ page: 1 }));
+      dispatch(getProductList({ page: 1 }));
       return response.data.data;
     } catch (error) {
       return rejectWithValue(error.error);
@@ -126,7 +159,18 @@ const productSlice = createSlice({
         state.loading = false;
         state.error = action.payload;
         state.success = false;
-      });
+      })
+      .addCase(getProductDetail.pending, (state, action) => {
+        state.loading = false;
+      })
+      .addCase(getProductDetail.fulfilled, (state, action) => {
+        state.loading = false;
+      })
+      .addCase(getProductDetail.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      
   },
 });
 
