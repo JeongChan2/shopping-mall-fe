@@ -5,6 +5,7 @@ import { useSearchParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { getProductList } from "../../features/product/productSlice";
 import { ClipLoader } from "react-spinners";
+import { getCartList } from "../../features/cart/cartSlice";
 
 const LandingPage = () => {
   const dispatch = useDispatch();
@@ -12,6 +13,9 @@ const LandingPage = () => {
   const { productList, loading } = useSelector((state) => state.product);
   const [query] = useSearchParams();
   const name = query.get("name");
+  useEffect(() => {
+    dispatch(getCartList());
+  }, []);
   useEffect(() => {
     dispatch(
       getProductList({
