@@ -28,7 +28,7 @@ export const addToCart = createAsyncThunk(
     } catch (error) {
       dispatch(
         showToastMessage({
-          message: "fail add item in cart",
+          message: error.error,
           status: "error",
         })
       );
